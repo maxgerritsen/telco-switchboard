@@ -11,7 +11,7 @@ export const Header = () => {
         <header className="bg-background border-b border-border px-6 py-4 flex items-center justify-between sticky top-0 z-50">
             <Link to="/" className="flex items-center gap-2 text-primary hover:text-primary/90 transition">
                 <LayoutGrid className="w-6 h-6" />
-                <span className="font-bold text-xl tracking-tight text-foreground">Household Offer Tool</span>
+                <span className="font-bold text-xl tracking-tight text-foreground">SwitchBoard</span>
             </Link>
             <div className="flex items-center gap-2">
                 <Button
