@@ -4,7 +4,7 @@ import { Dashboard } from '@/components/layout/Dashboard.tsx';
 
 function App() {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <div className="min-h-screen bg-background flex flex-col font-sans">
                 <Header />
                 <Routes>
