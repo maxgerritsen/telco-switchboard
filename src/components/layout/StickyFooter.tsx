@@ -1,7 +1,7 @@
 import { useComparisonStore } from '@/store/useStore.ts';
-import { useTimelineDuration } from '@/hooks/useTimelineDuration.ts';
+import { useComparisonCalculations } from '@/hooks/useComparisonCalculations.ts';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 import { clsx } from 'clsx';
@@ -10,38 +10,8 @@ import { calculatePlanCost } from '@/lib/plans.ts';
 export const StickyFooter = () => {
     const [expanded, setExpanded] = useState(false);
     const { internet, mobilePeople } = useComparisonStore();
-    const maxDuration = useTimelineDuration();
 
-    const calculateTotalForSide = (side: 'current' | 'new', months: number): number | null => {
-        let total = 0;
-        let valid = true;
-
-        if (internet) {
-            const cost = calculatePlanCost(internet[side], months);
-            if (cost === null) valid = false;
-            else total += cost;
-        }
-
-        mobilePeople.forEach((person) => {
-            const cost = calculatePlanCost(person[side === 'current' ? 'currentPlan' : 'newPlan'], months);
-            if (cost === null) valid = false;
-            else total += cost;
-        });
-
-        return valid ? total : null;
-    };
-
-    const calculateDelta = (months: number): number | null => {
-        const currentTCO = calculateTotalForSide('current', months);
-        const newTCO = calculateTotalForSide('new', months);
-
-        if (currentTCO === null || newTCO === null) return null;
-        return newTCO - currentTCO;
-    };
-
-    const deltaEnd = useMemo(() => calculateDelta(maxDuration), [internet, mobilePeople, maxDuration]);
-    const delta1Year = useMemo(() => calculateDelta(maxDuration + 12), [internet, mobilePeople, maxDuration]);
-    const delta2Years = useMemo(() => calculateDelta(maxDuration + 24), [internet, mobilePeople, maxDuration]);
+    const { maxDuration, hasData, metricsAtEnd, metricsAt1Year, metricsAt2Years } = useComparisonCalculations();
 
     const formatCurrency = (val: number, minimumFractionDigits = 0) => {
         return new Intl.NumberFormat('nl-NL', {
@@ -55,8 +25,6 @@ export const StickyFooter = () => {
     const renderDelta = (delta: number | null, showPlus = true) => {
         if (delta === null) return <span className="text-gray-300">--</span>;
 
-        // Negative delta means cost is lower (savings) -> Green
-        // Positive delta means cost is higher (extra) -> Red
         const isSavings = delta < 0;
         const isNeutral = delta === 0;
 
@@ -76,56 +44,6 @@ export const StickyFooter = () => {
         if (price === null) return <span className="text-gray-300">--</span>;
         return <span className="text-gray-600 font-medium">{formatCurrency(price)}</span>;
     };
-
-    const hasData = (internet && (internet.current.basePrice || 0) > 0) || mobilePeople.length > 0;
-
-    const mobileTotalCurrent = useMemo(() => {
-        let total = 0;
-        let valid = true;
-        mobilePeople.forEach((p) => {
-            const cost = calculatePlanCost(p.currentPlan, maxDuration);
-            if (cost === null) valid = false;
-            else total += cost;
-        });
-        return valid ? total : null;
-    }, [mobilePeople, maxDuration]);
-
-    const mobileTotalNew = useMemo(() => {
-        let total = 0;
-        let valid = true;
-        mobilePeople.forEach((p) => {
-            const cost = calculatePlanCost(p.newPlan, maxDuration);
-            if (cost === null) valid = false;
-            else total += cost;
-        });
-        return valid ? total : null;
-    }, [mobilePeople, maxDuration]);
-
-    const totalCurrent = useMemo(() => {
-        let total = 0;
-        let valid = true;
-        if (internet) {
-            const cost = calculatePlanCost(internet.current, maxDuration);
-            if (cost === null) valid = false;
-            else total += cost;
-        }
-        if (mobileTotalCurrent === null) valid = false;
-        else total += mobileTotalCurrent!;
-        return valid ? total : null;
-    }, [internet, mobileTotalCurrent, maxDuration]);
-
-    const totalNew = useMemo(() => {
-        let total = 0;
-        let valid = true;
-        if (internet) {
-            const cost = calculatePlanCost(internet.new, maxDuration);
-            if (cost === null) valid = false;
-            else total += cost;
-        }
-        if (mobileTotalNew === null) valid = false;
-        else total += mobileTotalNew!;
-        return valid ? total : null;
-    }, [internet, mobileTotalNew, maxDuration]);
 
     return (
         <Collapsible
@@ -159,93 +77,41 @@ export const StickyFooter = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
-                                {internet &&
-                                    (() => {
-                                        const currentCost = calculatePlanCost(internet.current, maxDuration);
-                                        const newCost = calculatePlanCost(internet.new, maxDuration);
-
-                                        const currentCost12 = calculatePlanCost(internet.current, maxDuration + 12);
-                                        const newCost12 = calculatePlanCost(internet.new, maxDuration + 12);
-
-                                        const currentCost24 = calculatePlanCost(internet.current, maxDuration + 24);
-                                        const newCost24 = calculatePlanCost(internet.new, maxDuration + 24);
-
-                                        return (
-                                            <tr className="group hover:bg-gray-50/50 transition-colors">
-                                                <td className="px-6 py-4 font-semibold text-gray-800">Internet & TV</td>
-                                                <td className="px-6 py-4 text-right">{renderPrice(currentCost)}</td>
-                                                <td className="px-6 py-4 text-right">{renderPrice(newCost)}</td>
-                                                <td className="px-6 py-4 text-right">
-                                                    {renderDelta(
-                                                        newCost !== null && currentCost !== null
-                                                            ? newCost - currentCost
-                                                            : null,
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-right">
-                                                    {renderDelta(
-                                                        newCost12 !== null && currentCost12 !== null
-                                                            ? newCost12 - currentCost12
-                                                            : null,
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-right">
-                                                    {renderDelta(
-                                                        newCost24 !== null && currentCost24 !== null
-                                                            ? newCost24 - currentCost24
-                                                            : null,
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        );
-                                    })()}
+                                {internet && (
+                                    <tr className="group hover:bg-gray-50/50 transition-colors">
+                                        <td className="px-6 py-4 font-semibold text-gray-800">Internet & TV</td>
+                                        <td className="px-6 py-4 text-right">
+                                            {renderPrice(metricsAtEnd.internet.current)}
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            {renderPrice(metricsAtEnd.internet.new)}
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            {renderDelta(metricsAtEnd.internet.delta)}
+                                        </td>
+                                        <td className="px-6 py-4 text-right text-gray-300">--</td>
+                                        <td className="px-6 py-4 text-right text-gray-300">--</td>
+                                    </tr>
+                                )}
 
                                 {mobilePeople.length > 0 && (
                                     <>
                                         <tr className="bg-gray-50/30 font-semibold">
                                             <td className="px-6 py-4 text-gray-800">Mobiel (Totaal)</td>
-                                            <td className="px-6 py-4 text-right">{renderPrice(mobileTotalCurrent)}</td>
-                                            <td className="px-6 py-4 text-right">{renderPrice(mobileTotalNew)}</td>
                                             <td className="px-6 py-4 text-right">
-                                                {renderDelta(
-                                                    mobileTotalNew !== null && mobileTotalCurrent !== null
-                                                        ? mobileTotalNew - mobileTotalCurrent
-                                                        : null,
-                                                )}
+                                                {renderPrice(metricsAtEnd.mobile.current)}
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                {renderPrice(metricsAtEnd.mobile.new)}
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                {renderDelta(metricsAtEnd.mobile.delta)}
                                             </td>
                                             <td className="px-6 py-4 text-right font-normal">
-                                                {(() => {
-                                                    let newTotal = 0;
-                                                    let currentTotal = 0;
-                                                    let valid = true;
-                                                    mobilePeople.forEach((p) => {
-                                                        const n = calculatePlanCost(p.newPlan, maxDuration + 12);
-                                                        const c = calculatePlanCost(p.currentPlan, maxDuration + 12);
-                                                        if (n === null || c === null) valid = false;
-                                                        else {
-                                                            newTotal += n;
-                                                            currentTotal += c;
-                                                        }
-                                                    });
-                                                    return renderDelta(valid ? newTotal - currentTotal : null);
-                                                })()}
+                                                {renderDelta(metricsAt1Year.mobile.delta)}
                                             </td>
                                             <td className="px-6 py-4 text-right font-normal">
-                                                {(() => {
-                                                    let newTotal = 0;
-                                                    let currentTotal = 0;
-                                                    let valid = true;
-                                                    mobilePeople.forEach((p) => {
-                                                        const n = calculatePlanCost(p.newPlan, maxDuration + 24);
-                                                        const c = calculatePlanCost(p.currentPlan, maxDuration + 24);
-                                                        if (n === null || c === null) valid = false;
-                                                        else {
-                                                            newTotal += n;
-                                                            currentTotal += c;
-                                                        }
-                                                    });
-                                                    return renderDelta(valid ? newTotal - currentTotal : null);
-                                                })()}
+                                                {renderDelta(metricsAt2Years.mobile.delta)}
                                             </td>
                                         </tr>
 
@@ -302,11 +168,17 @@ export const StickyFooter = () => {
                             <tfoot className="bg-gray-50 border-t border-gray-200 font-bold">
                                 <tr>
                                     <td className="px-6 py-4 text-gray-900">Totaal</td>
-                                    <td className="px-6 py-4 text-right">{renderPrice(totalNew)}</td>
-                                    <td className="px-6 py-4 text-right">{renderPrice(totalCurrent)}</td>
-                                    <td className="px-6 py-4 text-right text-lg">{renderDelta(deltaEnd)}</td>
-                                    <td className="px-6 py-4 text-right text-lg">{renderDelta(delta1Year)}</td>
-                                    <td className="px-6 py-4 text-right text-lg">{renderDelta(delta2Years)}</td>
+                                    <td className="px-6 py-4 text-right">{renderPrice(metricsAtEnd.total.new)}</td>
+                                    <td className="px-6 py-4 text-right">{renderPrice(metricsAtEnd.total.current)}</td>
+                                    <td className="px-6 py-4 text-right text-lg">
+                                        {renderDelta(metricsAtEnd.total.delta)}
+                                    </td>
+                                    <td className="px-6 py-4 text-right text-lg">
+                                        {renderDelta(metricsAt1Year.total.delta)}
+                                    </td>
+                                    <td className="px-6 py-4 text-right text-lg">
+                                        {renderDelta(metricsAt2Years.total.delta)}
+                                    </td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -322,7 +194,11 @@ export const StickyFooter = () => {
                                 Verschil ({maxDuration} mnd)
                             </p>
                             <div className="text-3xl font-extrabold tracking-tight">
-                                {hasData ? renderDelta(deltaEnd, false) : <span className="text-gray-300">--</span>}
+                                {hasData ? (
+                                    renderDelta(metricsAtEnd.total.delta, false)
+                                ) : (
+                                    <span className="text-gray-300">--</span>
+                                )}
                             </div>
                         </div>
                         <div className="hidden md:block">
@@ -330,7 +206,11 @@ export const StickyFooter = () => {
                                 1 jaar later
                             </p>
                             <div className="text-2xl font-bold tracking-tight">
-                                {hasData ? renderDelta(delta1Year, false) : <span className="text-gray-300">--</span>}
+                                {hasData ? (
+                                    renderDelta(metricsAt1Year.total.delta, false)
+                                ) : (
+                                    <span className="text-gray-300">--</span>
+                                )}
                             </div>
                         </div>
                         <div className="hidden md:block">
@@ -338,7 +218,11 @@ export const StickyFooter = () => {
                                 2 jaar later
                             </p>
                             <div className="text-2xl font-bold tracking-tight">
-                                {hasData ? renderDelta(delta2Years, false) : <span className="text-gray-300">--</span>}
+                                {hasData ? (
+                                    renderDelta(metricsAt2Years.total.delta, false)
+                                ) : (
+                                    <span className="text-gray-300">--</span>
+                                )}
                             </div>
                         </div>
                     </div>
