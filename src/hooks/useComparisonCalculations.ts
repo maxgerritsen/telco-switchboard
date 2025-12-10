@@ -73,6 +73,7 @@ export const useComparisonCalculations = () => {
         () => ({
             total: getSnapshot(maxDuration + 12, 'total'),
             mobile: getSnapshot(maxDuration + 12, 'mobile'),
+            internet: getSnapshot(maxDuration + 12, 'internet'),
         }),
         [internet, mobilePeople, maxDuration],
     );
@@ -81,6 +82,7 @@ export const useComparisonCalculations = () => {
         () => ({
             total: getSnapshot(maxDuration + 24, 'total'),
             mobile: getSnapshot(maxDuration + 24, 'mobile'),
+            internet: getSnapshot(maxDuration + 24, 'internet'),
         }),
         [internet, mobilePeople, maxDuration],
     );

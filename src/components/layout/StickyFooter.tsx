@@ -54,7 +54,7 @@ export const StickyFooter = () => {
                 <div className="max-w-7xl mx-auto px-6 py-6 animate-in slide-in-from-bottom-2 duration-300">
                     <div className="rounded-lg border border-gray-100 overflow-hidden shadow-sm bg-white">
                         <table className="w-full text-sm">
-                            <thead className="bg-gray-50 border-b border-gray-100">
+                            <thead className="bg-muted border-b">
                                 <tr>
                                     <th className="px-6 py-4 text-left font-semibold text-gray-700 w-1/4">
                                         Abonnement
@@ -78,8 +78,8 @@ export const StickyFooter = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-50">
                                 {internet && (
-                                    <tr className="group hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4 font-semibold text-gray-800">Internet & TV</td>
+                                    <tr className="bg-gray-50 font-semibold">
+                                        <td className="px-6 py-4 text-gray-800">Internet & TV</td>
                                         <td className="px-6 py-4 text-right">
                                             {renderPrice(metricsAtEnd.internet.current)}
                                         </td>
@@ -89,14 +89,18 @@ export const StickyFooter = () => {
                                         <td className="px-6 py-4 text-right">
                                             {renderDelta(metricsAtEnd.internet.delta)}
                                         </td>
-                                        <td className="px-6 py-4 text-right text-gray-300">--</td>
-                                        <td className="px-6 py-4 text-right text-gray-300">--</td>
+                                        <td className="px-6 py-4 text-right">
+                                            {renderDelta(metricsAt1Year.internet.delta)}
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            {renderDelta(metricsAt2Years.internet.delta)}
+                                        </td>
                                     </tr>
                                 )}
 
                                 {mobilePeople.length > 0 && (
                                     <>
-                                        <tr className="bg-gray-50/30 font-semibold">
+                                        <tr className="bg-gray-50 font-semibold">
                                             <td className="px-6 py-4 text-gray-800">Mobiel (Totaal)</td>
                                             <td className="px-6 py-4 text-right">
                                                 {renderPrice(metricsAtEnd.mobile.current)}
@@ -136,8 +140,8 @@ export const StickyFooter = () => {
                                                     key={person.id}
                                                     className="group hover:bg-gray-50/50 transition-colors text-gray-500">
                                                     <td className="px-6 py-3 pl-10">{person.name || 'Persoon'}</td>
-                                                    <td className="px-6 py-3 text-right">{renderPrice(newCost)}</td>
                                                     <td className="px-6 py-3 text-right">{renderPrice(currentCost)}</td>
+                                                    <td className="px-6 py-3 text-right">{renderPrice(newCost)}</td>
                                                     <td className="px-6 py-3 text-right">
                                                         {renderDelta(
                                                             newCost !== null && currentCost !== null
@@ -165,7 +169,7 @@ export const StickyFooter = () => {
                                     </>
                                 )}
                             </tbody>
-                            <tfoot className="bg-gray-50 border-t border-gray-200 font-bold">
+                            <tfoot className="bg-muted border-t font-bold">
                                 <tr>
                                     <td className="px-6 py-4 text-gray-900">Totaal</td>
                                     <td className="px-6 py-4 text-right">{renderPrice(metricsAtEnd.total.new)}</td>
