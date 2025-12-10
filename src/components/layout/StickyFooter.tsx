@@ -52,7 +52,7 @@ export const StickyFooter = () => {
             className="fixed bottom-0 inset-x-0 z-40 flex flex-col justify-end">
             <CollapsibleContent className="bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
                 <div className="max-w-7xl mx-auto px-6 py-6 animate-in slide-in-from-bottom-2 duration-300">
-                    <div className="rounded-lg border border-gray-100 overflow-hidden shadow-sm bg-white">
+                    <div className="rounded-lg border  overflow-hidden shadow-sm bg-white">
                         <table className="w-full text-sm">
                             <thead className="bg-muted border-b">
                                 <tr>
