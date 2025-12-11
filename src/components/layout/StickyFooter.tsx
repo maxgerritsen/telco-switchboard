@@ -1,6 +1,6 @@
 import { useComparisonStore } from '@/store/useStore.ts';
 import { useComparisonCalculations } from '@/hooks/useComparisonCalculations.ts';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Github } from 'lucide-react';
 import { useState } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
@@ -240,6 +240,26 @@ export const StickyFooter = () => {
                         </Button>
                     </CollapsibleTrigger>
                 </div>
+            </div>
+            <div className="bg-zinc-900 text-white text-sm py-2 text-center font-medium flex items-center justify-center gap-2">
+                <span>SwitchBoard v{import.meta.env.PACKAGE_VERSION}</span>
+                <a
+                    href="https://github.com/maxgerritsen/telco-switchboard"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-white transition-colors">
+                    <Github className="w-4 h-4" />
+                </a>
+                <span>
+                    Made by{' '}
+                    <a
+                        href="https://www.linkedin.com/in/maxgerritsen/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-gray-400 transition-colors underline">
+                        Max Gerritsen
+                    </a>
+                </span>
             </div>
         </Collapsible>
     );
