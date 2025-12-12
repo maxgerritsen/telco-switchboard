@@ -4,7 +4,7 @@ export const useTimelineDuration = () => {
     const { internet, mobilePeople } = useComparisonStore();
 
     const getDuration = () => {
-        let maxDuration = 24;
+        let maxDuration = 0;
 
         if (internet) {
             if ((internet.current.contractDuration || 0) > maxDuration)
