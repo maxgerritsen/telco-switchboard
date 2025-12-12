@@ -241,7 +241,7 @@ export const StickyFooter = () => {
                     </CollapsibleTrigger>
                 </div>
             </div>
-            <div className="bg-zinc-900 text-white text-sm py-2 text-center font-medium flex items-center justify-center gap-2">
+            <div className="bg-zinc-900 text-white text-sm py-2 text-center font-medium flex items-center justify-center gap-2 flex-wrap">
                 <span>SwitchBoard v{import.meta.env.PACKAGE_VERSION}</span>
                 <a
                     href="https://github.com/maxgerritsen/telco-switchboard"
@@ -250,14 +250,24 @@ export const StickyFooter = () => {
                     className="text-gray-400 hover:text-white transition-colors">
                     <Github className="w-4 h-4" />
                 </a>
+                <span className="text-gray-600">|</span>
                 <span>
-                    Made by{' '}
+                    Ontwikkeld door{' '}
                     <a
                         href="https://www.linkedin.com/in/maxgerritsen/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:text-gray-400 transition-colors underline">
                         Max Gerritsen
+                    </a>
+                </span>
+                <span className="text-gray-600">|</span>
+                <span>
+                    Suggesties:{' '}
+                    <a
+                        href="mailto:switchboard@maxgerritsen.nl"
+                        className="hover:text-gray-400 transition-colors underline">
+                        switchboard@maxgerritsen.nl
                     </a>
                 </span>
             </div>
