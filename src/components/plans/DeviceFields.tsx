@@ -1,4 +1,5 @@
 import type { SubscriptionPlan } from '@/types.ts';
+import { createEmptyDeviceDetails } from '@/lib/plans.ts';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
 import { Label } from '@/components/ui/label.tsx';
 import { NumberInput } from '@/components/ui/NumberInput.tsx';
@@ -14,22 +15,17 @@ export const DeviceFields = ({ plan, onUpdate }: Props) => {
             <div className="flex items-center gap-2 mb-4">
                 <Checkbox
                     id={`device-${plan.id}`}
-                    checked={plan.deviceDetails?.hasDevice || false}
+                    checked={!!plan.deviceDetails}
                     onCheckedChange={(checked) =>
                         onUpdate({
-                            deviceDetails: plan.deviceDetails
-                                ? {
-                                      ...plan.deviceDetails,
-                                      hasDevice: !!checked,
-                                  }
-                                : undefined,
+                            deviceDetails: checked ? createEmptyDeviceDetails() : undefined,
                         })
                     }
                 />
                 <Label htmlFor={`device-${plan.id}`}>Inclusief toestel</Label>
             </div>
 
-            {plan.deviceDetails?.hasDevice && (
+            {plan.deviceDetails && (
                 <div className="grid grid-cols-2 gap-4 pl-6">
                     <div className="space-y-1.5">
                         <Label className="text-xs text-muted-foreground">Eenmalig (€)</Label>

@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Button } from '@/components/ui/button';
 import { clsx } from 'clsx';
 import { calculatePlanCost } from '@/lib/plans.ts';
+import { Separator } from '@/components/ui/separator.tsx';
 
 export const StickyFooter = () => {
     const [expanded, setExpanded] = useState(false);
@@ -250,7 +251,7 @@ export const StickyFooter = () => {
                     className="text-gray-400 hover:text-white transition-colors">
                     <Github className="w-4 h-4" />
                 </a>
-                <span className="text-gray-600">|</span>
+                <Separator orientation="vertical" className="bg-gray-400" />
                 <span>
                     Ontwikkeld door{' '}
                     <a
@@ -261,7 +262,7 @@ export const StickyFooter = () => {
                         Max Gerritsen
                     </a>
                 </span>
-                <span className="text-gray-600">|</span>
+                <Separator orientation="vertical" className="bg-gray-400" />
                 <span>
                     Suggesties:{' '}
                     <a
