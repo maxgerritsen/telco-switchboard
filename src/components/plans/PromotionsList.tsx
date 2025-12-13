@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label.tsx';
 import { NumberInput } from '@/components/ui/NumberInput.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Plus, X } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
+import { createId } from '@/lib/utils.ts';
 
 interface Props {
     plan: SubscriptionPlan;
@@ -80,10 +80,9 @@ export const PromotionsList = ({ plan, onUpdate }: Props) => {
                         promotions: [
                             ...plan.promotions,
                             {
-                                id: uuidv4(),
+                                id: createId(),
                                 durationMonths: undefined,
                                 discountedPrice: undefined,
-                                label: '',
                             },
                         ],
                     });

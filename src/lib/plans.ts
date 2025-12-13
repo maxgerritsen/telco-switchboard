@@ -1,19 +1,13 @@
 import { type DeviceDetails, type MobilePerson, PlanType, type SubscriptionPlan } from '@/types.ts';
-import { v4 as uuidv4 } from 'uuid';
-
-export const DEFAULT_INTERNET_NAME_CURRENT = 'Huidig Internet & TV';
-export const DEFAULT_INTERNET_NAME_NEW = 'Nieuw Internet & TV';
-export const DEFAULT_MOBILE_NAME_CURRENT = 'Current Plan';
-export const DEFAULT_MOBILE_NAME_NEW = 'New Offer';
+import { createId } from '@/lib/utils.ts';
 
 export const createEmptyDeviceDetails = (): DeviceDetails => ({
     upfrontCost: undefined,
     monthlyCredit: undefined,
 });
 
-export const createEmptyPlan = (type: PlanType, label?: string): SubscriptionPlan => ({
-    id: uuidv4(),
-    name: label,
+export const createEmptyPlan = (type: PlanType): SubscriptionPlan => ({
+    id: createId(),
     type,
     basePrice: undefined,
     contractDuration: undefined,
@@ -24,8 +18,8 @@ export const createEmptyPlan = (type: PlanType, label?: string): SubscriptionPla
 export const createNewMobilePerson = (id: string, name: string): MobilePerson => ({
     id,
     name,
-    currentPlan: createEmptyPlan(PlanType.MOBILE, DEFAULT_MOBILE_NAME_CURRENT),
-    newPlan: createEmptyPlan(PlanType.MOBILE, DEFAULT_MOBILE_NAME_NEW),
+    currentPlan: createEmptyPlan(PlanType.MOBILE),
+    newPlan: createEmptyPlan(PlanType.MOBILE),
 });
 
 export const isPlanComplete = (plan: SubscriptionPlan): boolean => {

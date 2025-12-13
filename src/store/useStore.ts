@@ -2,14 +2,9 @@ import { create } from 'zustand';
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
 import LZString from 'lz-string';
 import { type ComparisonState, PlanType } from '@/types.ts';
-import {
-    createEmptyPlan,
-    createNewMobilePerson,
-    DEFAULT_INTERNET_NAME_CURRENT,
-    DEFAULT_INTERNET_NAME_NEW,
-} from '@/lib/plans.ts';
-import { v4 as uuidv4 } from 'uuid';
+import { createEmptyPlan, createNewMobilePerson } from '@/lib/plans.ts';
 import { generateDemoData } from '@/store/demoData.ts';
+import { createId } from '@/lib/utils.ts';
 
 const hashStorage: StateStorage = {
     getItem: (key): string | null => {
@@ -39,8 +34,8 @@ export const useComparisonStore = create<ComparisonState>()(
             addInternetPlan: () =>
                 set(() => ({
                     internet: {
-                        current: createEmptyPlan(PlanType.INTERNET_TV, DEFAULT_INTERNET_NAME_CURRENT),
-                        new: createEmptyPlan(PlanType.INTERNET_TV, DEFAULT_INTERNET_NAME_NEW),
+                        current: createEmptyPlan(PlanType.INTERNET_TV),
+                        new: createEmptyPlan(PlanType.INTERNET_TV),
                     },
                 })),
 
@@ -61,7 +56,7 @@ export const useComparisonStore = create<ComparisonState>()(
                 set((state) => ({
                     mobilePeople: [
                         ...state.mobilePeople,
-                        createNewMobilePerson(uuidv4(), `Person ${state.mobilePeople.length + 1}`),
+                        createNewMobilePerson(createId(), `Person ${state.mobilePeople.length + 1}`),
                     ],
                 })),
 

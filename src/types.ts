@@ -9,7 +9,6 @@ export interface Promotion {
     id: string;
     durationMonths: number | undefined;
     discountedPrice: number | undefined;
-    label: string;
 }
 
 export interface DeviceDetails {
@@ -19,7 +18,6 @@ export interface DeviceDetails {
 
 export interface SubscriptionPlan {
     id: string;
-    name?: string;
     type: PlanType;
     basePrice: number | undefined;
     contractDuration: number | undefined;
