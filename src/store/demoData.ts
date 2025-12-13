@@ -24,7 +24,6 @@ export const generateDemoData = () => {
 
         if (device && type === PlanType.MOBILE) {
             plan.deviceDetails = {
-                hasDevice: true,
                 upfrontCost: device.upfront,
                 monthlyCredit: device.credit,
             };

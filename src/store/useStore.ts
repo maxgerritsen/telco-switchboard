@@ -2,7 +2,12 @@ import { create } from 'zustand';
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
 import LZString from 'lz-string';
 import { type ComparisonState, PlanType } from '@/types.ts';
-import { createEmptyPlan, createNewMobilePerson } from '@/lib/plans.ts';
+import {
+    createEmptyPlan,
+    createNewMobilePerson,
+    DEFAULT_INTERNET_NAME_CURRENT,
+    DEFAULT_INTERNET_NAME_NEW,
+} from '@/lib/plans.ts';
 import { v4 as uuidv4 } from 'uuid';
 import { generateDemoData } from '@/store/demoData.ts';
 
@@ -10,15 +15,11 @@ const hashStorage: StateStorage = {
     getItem: (key): string | null => {
         const searchParams = new URLSearchParams(location.hash.slice(1));
         const storedValue = searchParams.get(key);
-
-        if (!storedValue) return null;
-
-        return LZString.decompressFromEncodedURIComponent(storedValue);
+        return storedValue ? LZString.decompressFromEncodedURIComponent(storedValue) : null;
     },
     setItem: (key, newValue): void => {
         const searchParams = new URLSearchParams(location.hash.slice(1));
         const compressed = LZString.compressToEncodedURIComponent(newValue);
-
         searchParams.set(key, compressed);
         location.hash = searchParams.toString();
     },
@@ -33,14 +34,13 @@ export const useComparisonStore = create<ComparisonState>()(
     persist(
         (set) => ({
             internet: null,
-
             mobilePeople: [],
 
             addInternetPlan: () =>
                 set(() => ({
                     internet: {
-                        current: createEmptyPlan(PlanType.INTERNET_TV, 'Huidig Internet & TV'),
-                        new: createEmptyPlan(PlanType.INTERNET_TV, 'Nieuw Internet & TV'),
+                        current: createEmptyPlan(PlanType.INTERNET_TV, DEFAULT_INTERNET_NAME_CURRENT),
+                        new: createEmptyPlan(PlanType.INTERNET_TV, DEFAULT_INTERNET_NAME_NEW),
                     },
                 })),
 
@@ -74,12 +74,10 @@ export const useComparisonStore = create<ComparisonState>()(
                 set((state) => ({
                     mobilePeople: state.mobilePeople.map((person) => {
                         if (person.id !== personId) return person;
+                        const planKey = type === 'current' ? 'currentPlan' : 'newPlan';
                         return {
                             ...person,
-                            [type === 'current' ? 'currentPlan' : 'newPlan']: {
-                                ...person[type === 'current' ? 'currentPlan' : 'newPlan'],
-                                ...planUpdates,
-                            },
+                            [planKey]: { ...person[planKey], ...planUpdates },
                         };
                     }),
                 })),
@@ -91,20 +89,16 @@ export const useComparisonStore = create<ComparisonState>()(
                     ),
                 })),
 
-            setDemoState: () => {
-                const demoData = generateDemoData();
-                set(demoData);
-            },
-
-            resetState: () =>
-                set(() => ({
-                    internet: null,
-                    mobilePeople: [],
-                })),
+            setDemoState: () => set(generateDemoData()),
+            resetState: () => set({ internet: null, mobilePeople: [] }),
         }),
         {
-            name: 'state',
+            name: 's',
             storage: createJSONStorage(() => hashStorage),
+            partialize: (state) => ({
+                internet: state.internet,
+                mobilePeople: state.mobilePeople,
+            }),
         },
     ),
 );

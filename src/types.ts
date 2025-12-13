@@ -12,20 +12,19 @@ export interface Promotion {
     label: string;
 }
 
-export interface DeviceCost {
-    hasDevice: boolean;
+export interface DeviceDetails {
     upfrontCost: number | undefined;
     monthlyCredit: number | undefined;
 }
 
 export interface SubscriptionPlan {
     id: string;
-    name: string;
+    name?: string;
     type: PlanType;
     basePrice: number | undefined;
     contractDuration: number | undefined;
     promotions: Promotion[];
-    deviceDetails?: DeviceCost;
+    deviceDetails?: DeviceDetails;
 }
 
 export interface MobilePerson {
