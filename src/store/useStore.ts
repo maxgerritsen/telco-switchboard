@@ -1,19 +1,25 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
+import LZString from 'lz-string';
 import { type ComparisonState, PlanType } from '@/types.ts';
 import { createEmptyPlan, createNewMobilePerson } from '@/lib/plans.ts';
 import { v4 as uuidv4 } from 'uuid';
 import { generateDemoData } from '@/store/demoData.ts';
 
 const hashStorage: StateStorage = {
-    getItem: (key): string => {
+    getItem: (key): string | null => {
         const searchParams = new URLSearchParams(location.hash.slice(1));
-        const storedValue = searchParams.get(key) ?? '';
-        return JSON.parse(storedValue);
+        const storedValue = searchParams.get(key);
+
+        if (!storedValue) return null;
+
+        return LZString.decompressFromEncodedURIComponent(storedValue);
     },
     setItem: (key, newValue): void => {
         const searchParams = new URLSearchParams(location.hash.slice(1));
-        searchParams.set(key, JSON.stringify(newValue));
+        const compressed = LZString.compressToEncodedURIComponent(newValue);
+
+        searchParams.set(key, compressed);
         location.hash = searchParams.toString();
     },
     removeItem: (key): void => {
