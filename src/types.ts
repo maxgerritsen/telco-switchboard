@@ -43,8 +43,6 @@ export interface ComparisonState {
 
     mobilePeople: MobilePerson[];
 
-    startDate: Date;
-
     addInternetPlan: () => void;
     removeInternetPlan: () => void;
     updateInternetPlan: (type: 'current' | 'new', plan: Partial<SubscriptionPlan>) => void;
