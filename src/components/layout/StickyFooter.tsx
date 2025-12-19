@@ -173,8 +173,8 @@ export const StickyFooter = () => {
                             <tfoot className="bg-muted border-t font-bold">
                                 <tr>
                                     <td className="px-6 py-4 text-gray-900">Totaal</td>
-                                    <td className="px-6 py-4 text-right">{renderPrice(metricsAtEnd.total.new)}</td>
                                     <td className="px-6 py-4 text-right">{renderPrice(metricsAtEnd.total.current)}</td>
+                                    <td className="px-6 py-4 text-right">{renderPrice(metricsAtEnd.total.new)}</td>
                                     <td className="px-6 py-4 text-right text-lg">
                                         {renderDelta(metricsAtEnd.total.delta)}
                                     </td>
