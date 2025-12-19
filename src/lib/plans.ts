@@ -1,4 +1,4 @@
-import { type DeviceDetails, type MobilePerson, PlanType, type SubscriptionPlan } from '@/types.ts';
+import { type DeviceDetails, type MobilePerson, type SubscriptionPlan } from '@/types.ts';
 import { createId } from '@/lib/utils.ts';
 
 export const createEmptyDeviceDetails = (): DeviceDetails => ({
@@ -6,9 +6,8 @@ export const createEmptyDeviceDetails = (): DeviceDetails => ({
     monthlyCredit: undefined,
 });
 
-export const createEmptyPlan = (type: PlanType): SubscriptionPlan => ({
+export const createEmptyPlan = (): SubscriptionPlan => ({
     id: createId(),
-    type,
     basePrice: undefined,
     contractDuration: undefined,
     promotions: [],
@@ -18,8 +17,8 @@ export const createEmptyPlan = (type: PlanType): SubscriptionPlan => ({
 export const createNewMobilePerson = (id: string, name: string): MobilePerson => ({
     id,
     name,
-    currentPlan: createEmptyPlan(PlanType.MOBILE),
-    newPlan: createEmptyPlan(PlanType.MOBILE),
+    currentPlan: createEmptyPlan(),
+    newPlan: createEmptyPlan(),
 });
 
 export const isPlanComplete = (plan: SubscriptionPlan): boolean => {

@@ -1,4 +1,3 @@
-import { PlanType } from '@/types.ts';
 import { createId } from '@/lib/utils.ts';
 
 export const generateDemoData = () => {
@@ -6,7 +5,6 @@ export const generateDemoData = () => {
         internet: {
             current: {
                 id: createId(),
-                type: PlanType.INTERNET_TV,
                 basePrice: 72.5,
                 contractDuration: 24,
                 promotions: [
@@ -20,7 +18,6 @@ export const generateDemoData = () => {
             },
             new: {
                 id: createId(),
-                type: PlanType.INTERNET_TV,
                 basePrice: 55.0,
                 contractDuration: 24,
                 promotions: [
@@ -44,7 +41,6 @@ export const generateDemoData = () => {
                 name: 'Persoon 1',
                 currentPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 22.5,
                     contractDuration: 24,
                     promotions: [],
@@ -55,7 +51,6 @@ export const generateDemoData = () => {
                 },
                 newPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 25.0,
                     contractDuration: 24,
                     promotions: [],
@@ -70,7 +65,6 @@ export const generateDemoData = () => {
                 name: 'Persoon 2',
                 currentPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 22.5,
                     contractDuration: 24,
                     promotions: [],
@@ -81,7 +75,6 @@ export const generateDemoData = () => {
                 },
                 newPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 20.0,
                     contractDuration: 24,
                     promotions: [],
@@ -96,7 +89,6 @@ export const generateDemoData = () => {
                 name: 'Persoon 3',
                 currentPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 22.5,
                     contractDuration: 24,
                     promotions: [],
@@ -104,7 +96,6 @@ export const generateDemoData = () => {
                 },
                 newPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 20.0,
                     contractDuration: 24,
                     promotions: [],
@@ -116,7 +107,6 @@ export const generateDemoData = () => {
                 name: 'Persoon 4',
                 currentPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 22.5,
                     contractDuration: 24,
                     promotions: [],
@@ -124,7 +114,6 @@ export const generateDemoData = () => {
                 },
                 newPlan: {
                     id: createId(),
-                    type: PlanType.MOBILE,
                     basePrice: 20.0,
                     contractDuration: 24,
                     promotions: [],

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
 import LZString from 'lz-string';
-import { type ComparisonState, PlanType } from '@/types.ts';
+import { type ComparisonState } from '@/types.ts';
 import { createEmptyPlan, createNewMobilePerson } from '@/lib/plans.ts';
 import { generateDemoData } from '@/store/demoData.ts';
 import { createId } from '@/lib/utils.ts';
@@ -34,8 +34,8 @@ export const useComparisonStore = create<ComparisonState>()(
             addInternetPlan: () =>
                 set(() => ({
                     internet: {
-                        current: createEmptyPlan(PlanType.INTERNET_TV),
-                        new: createEmptyPlan(PlanType.INTERNET_TV),
+                        current: createEmptyPlan(),
+                        new: createEmptyPlan(),
                     },
                 })),
 
