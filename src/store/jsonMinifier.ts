@@ -102,9 +102,6 @@ const shouldSkipKey = (key: string, value: unknown): boolean => {
     // Ignore undefined or null
     if (value === undefined || value === null) return true;
 
-    // Ignore empty arrays (like promotions)
-    if (Array.isArray(value) && value.length === 0) return true;
-
     return false;
 };
 
@@ -116,10 +113,5 @@ const restoreObject = (obj: Record<string, unknown>) => {
     // Restore IDs
     if ((isPlan || isPerson || isPromo) && !obj.id) {
         obj.id = createId();
-    }
-
-    // Restore default empty arrays for Plans
-    if (isPlan && !obj.promotions) {
-        obj.promotions = [];
     }
 };
