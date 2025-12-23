@@ -196,7 +196,7 @@ export const StickyFooter = () => {
                     <div className="flex gap-16 transition-opacity duration-300" style={{ opacity: expanded ? 0 : 1 }}>
                         <div>
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-                                Verschil ({maxDuration} mnd)
+                                Einde contractduur ({maxDuration} mnd)
                             </p>
                             <div className="text-3xl font-extrabold tracking-tight">
                                 {hasData ? (
@@ -208,7 +208,7 @@ export const StickyFooter = () => {
                         </div>
                         <div className="hidden md:block">
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-                                1 jaar later
+                                1 jaar later ({maxDuration + 12} mnd)
                             </p>
                             <div className="text-2xl font-bold tracking-tight">
                                 {hasData ? (
@@ -220,7 +220,7 @@ export const StickyFooter = () => {
                         </div>
                         <div className="hidden md:block">
                             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
-                                2 jaar later
+                                2 jaar later ({maxDuration + 24} mnd)
                             </p>
                             <div className="text-2xl font-bold tracking-tight">
                                 {hasData ? (
