@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
 import LZString from 'lz-string';
-import { type ComparisonState, PlanType } from '@/types.ts';
+import { type ComparisonState } from '@/types.ts';
 import { createEmptyPlan, createNewMobilePerson } from '@/lib/plans.ts';
 import { generateDemoData } from '@/store/demoData.ts';
 import { createId } from '@/lib/utils.ts';
+import { minify, unminify } from '@/store/jsonMinifier.ts';
 
 const hashStorage: StateStorage = {
     getItem: (key): string | null => {
@@ -34,8 +35,8 @@ export const useComparisonStore = create<ComparisonState>()(
             addInternetPlan: () =>
                 set(() => ({
                     internet: {
-                        current: createEmptyPlan(PlanType.INTERNET_TV),
-                        new: createEmptyPlan(PlanType.INTERNET_TV),
+                        current: createEmptyPlan(),
+                        new: createEmptyPlan(),
                     },
                 })),
 
@@ -90,10 +91,26 @@ export const useComparisonStore = create<ComparisonState>()(
         {
             name: 's',
             storage: createJSONStorage(() => hashStorage),
-            partialize: (state) => ({
-                internet: state.internet,
-                mobilePeople: state.mobilePeople,
-            }),
+            version: 1,
+            partialize: (state) =>
+                minify({
+                    internet: state.internet,
+                    mobilePeople: state.mobilePeople,
+                }),
+            migrate: (persistedState: unknown, version) => {
+                if (version === 0) {
+                    return minify(persistedState);
+                }
+                return persistedState as ComparisonState;
+            },
+            merge: (persistedState: unknown, currentState) => {
+                const fullState = unminify(persistedState) as ComparisonState;
+                return {
+                    ...currentState,
+                    internet: fullState.internet ?? null,
+                    mobilePeople: fullState.mobilePeople ?? [],
+                };
+            },
         },
     ),
 );

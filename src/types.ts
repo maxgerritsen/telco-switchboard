@@ -1,10 +1,3 @@
-export const PlanType = {
-    INTERNET_TV: 'INTERNET_TV',
-    MOBILE: 'MOBILE',
-} as const;
-
-export type PlanType = (typeof PlanType)[keyof typeof PlanType];
-
 export interface Promotion {
     id: string;
     durationMonths: number | undefined;
@@ -18,7 +11,6 @@ export interface DeviceDetails {
 
 export interface SubscriptionPlan {
     id: string;
-    type: PlanType;
     basePrice: number | undefined;
     contractDuration: number | undefined;
     promotions: Promotion[];
