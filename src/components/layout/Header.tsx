@@ -1,6 +1,6 @@
 import { LayoutGrid, PlayCircle, RotateCcw, Link2, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useComparisonStore } from '@/store/useStore.ts';
+import { getShareableUrl, useComparisonStore } from '@/store/useStore.ts';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Separator } from '@/components/ui/separator.tsx';
@@ -11,7 +11,8 @@ export const Header = () => {
     const [copied, setCopied] = useState(false);
 
     const handleCopyUrl = async () => {
-        await navigator.clipboard.writeText(window.location.href);
+        const url = getShareableUrl();
+        await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };

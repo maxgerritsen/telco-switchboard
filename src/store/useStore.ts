@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import LZString from 'lz-string';
 import { type ComparisonState } from '@/types.ts';
 import { createEmptyPlan, createNewMobilePerson } from '@/lib/plans.ts';
@@ -7,23 +7,37 @@ import { generateDemoData } from '@/store/demoData.ts';
 import { createId } from '@/lib/utils.ts';
 import { minify, unminify } from '@/store/jsonMinifier.ts';
 
-const hashStorage: StateStorage = {
-    getItem: (key): string | null => {
-        const searchParams = new URLSearchParams(location.hash.slice(1));
-        const storedValue = searchParams.get(key);
-        return storedValue ? LZString.decompressFromEncodedURIComponent(storedValue) : null;
-    },
-    setItem: (key, newValue): void => {
-        const searchParams = new URLSearchParams(location.hash.slice(1));
-        const compressed = LZString.compressToEncodedURIComponent(newValue);
-        searchParams.set(key, compressed);
-        location.hash = searchParams.toString();
-    },
-    removeItem: (key): void => {
-        const searchParams = new URLSearchParams(location.hash.slice(1));
-        searchParams.delete(key);
-        location.hash = searchParams.toString();
-    },
+export const getShareableUrl = () => {
+    const state = useComparisonStore.getState();
+    const minified = minify({
+        internet: state.internet,
+        mobilePeople: state.mobilePeople,
+    });
+    const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(minified));
+
+    const url = new URL(window.location.href);
+    url.hash = compressed;
+    return url.toString();
+};
+
+export const loadFromUrl = () => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+
+    const payload = new URLSearchParams(hash).get('s') || hash;
+    const decompressed = LZString.decompressFromEncodedURIComponent(payload);
+    if (!decompressed) return;
+
+    const json = JSON.parse(decompressed);
+    const fullState = unminify(json.state ?? json) as ComparisonState;
+
+    useComparisonStore.setState({
+        internet: fullState.internet ?? null,
+        mobilePeople: fullState.mobilePeople ?? [],
+    });
+
+    // Clean the URL so the user sees a clean address bar
+    window.history.replaceState(null, '', ' ');
 };
 
 export const useComparisonStore = create<ComparisonState>()(
@@ -90,26 +104,13 @@ export const useComparisonStore = create<ComparisonState>()(
         }),
         {
             name: 's',
-            storage: createJSONStorage(() => hashStorage),
-            version: 1,
-            partialize: (state) =>
-                minify({
-                    internet: state.internet,
-                    mobilePeople: state.mobilePeople,
-                }),
+            storage: createJSONStorage(() => localStorage),
+            version: 2,
             migrate: (persistedState: unknown, version) => {
-                if (version === 0) {
-                    return minify(persistedState);
+                if (version === 1) {
+                    return unminify(persistedState) as ComparisonState;
                 }
                 return persistedState as ComparisonState;
-            },
-            merge: (persistedState: unknown, currentState) => {
-                const fullState = unminify(persistedState) as ComparisonState;
-                return {
-                    ...currentState,
-                    internet: fullState.internet ?? null,
-                    mobilePeople: fullState.mobilePeople ?? [],
-                };
             },
         },
     ),

@@ -2,12 +2,14 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Header } from '@/components/layout/Header.tsx';
 import { Dashboard } from '@/components/layout/Dashboard.tsx';
 import { useEffect } from 'react';
-import { useComparisonStore } from '@/store/useStore.ts';
+import { loadFromUrl } from '@/store/useStore.ts';
 
 function App() {
     useEffect(() => {
+        loadFromUrl();
+
         const handleHashChange = () => {
-            useComparisonStore.persist.rehydrate();
+            loadFromUrl();
         };
 
         window.addEventListener('hashchange', handleHashChange);
